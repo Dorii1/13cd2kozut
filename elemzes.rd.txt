@@ -1,0 +1,40 @@
+A server.js fájlban egy Node.js alapú Express szerver indul el, ami összeköttetésben áll egy MySQL adatbázissal.
+A feladata, hogy a backend kiszolgálja a frontend kéréseit, információkat kérjen le az adatbázisból, és ezeket JSON formátumban visszaadja a kliensnek.
+
+A kód elején a szükséges modulok kerülnek importálásra:
+
+express: ez hozza létre a webes szervert, és kezeli az útvonalakat (endpointokat).
+
+cors: engedélyezi, hogy más domainekről (pl. a frontendről) is lehessen kérést küldeni a szerverhez.
+
+mysql: biztosítja a kapcsolatot a MySQL adatbázissal.
+
+body-parser: lehetővé teszi, hogy a szerver JSON formátumú adatokat is fogadjon a kérésekből.
+
+Az app.use(cors()) és app.use(bodyParser.json()) sorok a szerver köztes rétegei (middleware-ek), amik minden bejövő kérésre lefutnak, hogy a szerver megfelelően tudja feldolgozni az információkat és kommunikáljon a klienssel.
+
+A db objektum létrehozása után a szerver beállítja a kapcsolatot az adatbázissal (localhoston futó, 3307-es porton lévő kozutak adatbázis).
+Ez a kapcsolat teszi lehetővé, hogy SQL-lekérdezéseket futtasson, például a regiok táblából információkat kérjen le.
+
+Az első app.get("/") végpont egy egyszerű teszt-API.
+Ha valaki a böngészőben megnyitja a szerver címét (pl. http://localhost:3000), akkor a szerver a "Fut a backend!" üzenetet küldi vissza.
+Ez azt jelenti, hogy a backend rendben működik.
+
+A második app.get("/regiok") végpont már adatbázis-lekérdezést végez.
+Amikor a kliens elküld egy GET kérést erre az útvonalra, a szerver lefuttatja az SQL-parancsot:
+
+SELECT * FROM regiok
+
+Ez az adatbázisban található regiok táblából kéri le az összes sort.
+A db.query() metódus végzi el a lekérdezést, és ha hiba van (err), akkor a szerver visszaküldi a hibát, ha pedig sikeres, akkor a result tartalmazza az adatokat, amit a szerver JSON formátumban küld vissza a kliensnek.
+
+Összességében ez a rész a szerver alapját mutatja meg:
+
+elindítja az Express alkalmazást,
+
+csatlakozik az adatbázishoz,
+
+és két GET API-t ad, amik válaszolnak a beérkező kérésekre.
+
+A "/" útvonal ellenőrzi, hogy a backend fut,
+a "/regiok" pedig ténylegesen adatokat szolgáltat a frontend számára.
